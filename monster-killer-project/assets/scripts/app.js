@@ -8,6 +8,9 @@ const EVENT_PLAYER_ATTACK = "PLAYER_ATTACK";
 const EVENT_MONSTER_ATTACK = "MONSTER_ATTACK";
 const EVENT_PLAYER_HEAL = "PLAYER_HEAL";
 const EVENT_PLAYER_STRONG_ATTACK = "PLAYER_STRONG_ATTACK";
+const EVENT_PLAYER_WON_GAME = "PLAYER_WON_THE_GAME";
+const EVENT_MONSTER_WON_GAME = "MONSTER_WON_THE_GAME";
+const EVENT_GAME_DRAW = "GAME_DRAW";
 let chosenMaxLife;
 let logEntries = [];
 
@@ -38,13 +41,18 @@ function writeToLog(event, monsterHealth, playerHealth, attackValue) {
     value: attackValue,
   };
 
-  if (event === EVENT_PLAYER_ATTACK) {
-    logEntry.target = "PLAYER";
-  } else if (event === EVENT_PLAYER_STRONG_ATTACK) {
-    logEntry.target = "PLAYER";
-  } else if (event === EVENT_MONSTER_ATTACK) {
-    logEntry.target = "MONSTER";
+  switch (event) {
+    case event === EVENT_PLAYER_ATTACK:
+      logEntry.target = "MONSTER";
+      break;
+    case event === EVENT_PLAYER_STRONG_ATTACK:
+      logEntry.target = "MONSTER";
+      break;
+    case event === EVENT_MONSTER_ATTACK:
+      logEntry.target = "PLAYER";
+      break;
   }
+
   logEntries.push(logEntry);
 }
 
@@ -67,13 +75,31 @@ function endRound() {
     alert("You would be died but the bonus life saved you!");
   }
 
-  console.log(logEntries);
+  // console.log(logEntries);
   if (currentMonsterHealth <= 0 && currentPlayerHealth > 0) {
     alert("You Won!!!");
+    writeToLog(
+      EVENT_PLAYER_WON_GAME,
+      currentMonsterHealth,
+      currentPlayerHealth,
+      playerDamage
+    );
   } else if (currentPlayerHealth <= 0 && currentMonsterHealth > 0) {
     alert("Monster Won!!");
+    writeToLog(
+      EVENT_MONSTER_WON_GAME,
+      currentMonsterHealth,
+      currentPlayerHealth,
+      playerDamage
+    );
   } else if (currentMonsterHealth <= 0 && currentPlayerHealth <= 0) {
     alert("You have a draw!!");
+    writeToLog(
+      EVENT_GAME_DRAW,
+      currentMonsterHealth,
+      currentPlayerHealth,
+      playerDamage
+    );
   }
 
   if (currentMonsterHealth <= 0 || currentPlayerHealth <= 0) {
@@ -130,6 +156,18 @@ function healPlayerHandler() {
   endRound();
 }
 
+function printLogHandler() {
+  for (let index = 0; index < logEntries.length; index++) {
+    const element = logEntries[index];
+    console.log(`#${index}`);
+    for (const key in element) {
+      const ele = element[key];
+      console.log(`${key} : ${ele}`);
+    }
+  }
+}
+
 attackBtn.addEventListener("click", attackHandler);
 strongAttackBtn.addEventListener("click", strongAttackHandler);
 healBtn.addEventListener("click", healPlayerHandler);
+logBtn.addEventListener("click", printLogHandler);
