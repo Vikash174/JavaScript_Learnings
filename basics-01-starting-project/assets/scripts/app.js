@@ -1,93 +1,62 @@
+const defaultResult = 0;
+let currentResult = defaultResult;
+let logEntries = [];
 
- const defaultResult = 0;
- let currentResult = defaultResult;
- let logEntries = [];
+function getUserInput() {
+  return parseInt(userInput.value);
+}
 
+function createAndWriteOutput(operator, resultBeforeCalc, clacNumber) {
+  const clacDescription = `${resultBeforeCalc} ${operator} ${clacNumber}`;
+  outputResult(currentResult, clacDescription);
+}
 
-  function getUserInput()
-  {
-    return parseInt(userInput.value);
-  }
+function writeToLog(
+  operationIdentifier,
+  prevResult,
+  operationNumber,
+  newResult
+) {
+  const logEntry = {
+    operation: operationIdentifier,
+    prevResult: prevResult,
+    number: operationNumber,
+    result: newResult,
+  };
 
-  function createAndWriteOutput(operator,resultBeforeCalc, clacNumber)
-  {
-   const clacDescription = `${resultBeforeCalc} ${operator} ${clacNumber}`;
-   outputResult(currentResult,clacDescription);
-  }
+  logEntries.push(logEntry);
+}
 
-  function writeToLog(
-     operationIdentifier,
-     prevResult,
-     operationNumber,
-     newResult)
-     {
-        const logEntry = {
-          operation : operationIdentifier,
-          prevResult :prevResult,
-          number : operationNumber,
-          result : newResult
-        }
+function calculate(operation) {
+  const userInputString = getUserInput();
+  const initialResult = currentResult;
+  let operator;
+  switch (operation) {
+    case "ADD":
+      operator = "+";
+      currentResult += userInputString;
+      break;
 
-        logEntries.push(logEntry);
+    case "SUBTRACT":
+      operator = "-";
+      currentResult -= userInputString;
+      break;
 
-     }
-
-
-
-  function addNumbers() 
-  {
-   const userInputString = getUserInput();
-   const initialResult = currentResult;
-   currentResult += userInputString;
-   createAndWriteOutput('+',initialResult,currentResult);
-   writeToLog('ADD',initialResult,userInputString,currentResult);
-   console.log(logEntries);
-   }
-
-   function subtractNumbers()
-   {
-   const userInputString = getUserInput();
-   const initialResult = currentResult;
-   currentResult -= userInputString;
-   createAndWriteOutput('-',initialResult,currentResult);
-   writeToLog('SUBTRACT',initialResult,userInputString,currentResult);
-   console.log(logEntries);
-
-   }
-
-   function multiplyNumbers()
-   {
-      const userInputString = getUserInput();
-      const initialResult = currentResult;
+    case "MULTIPLY":
+      operator = "*";
       currentResult *= userInputString;
-      createAndWriteOutput('*',initialResult,currentResult);
-      writeToLog('MULTIPLY',initialResult,userInputString,currentResult);
-      console.log(logEntries);
+      break;
 
-   }
-
-   function divideNumbers()
-   {
-      const userInputString = getUserInput();
-      const initialResult = currentResult;
+    case "DIVIDE":
+      operator = "/";
       currentResult /= userInputString;
-      createAndWriteOutput('/',initialResult,currentResult);
-      writeToLog('DIVIDE',initialResult,userInputString,currentResult);
-      console.log(logEntries);
+      break;
+  }
+  createAndWriteOutput(operator, initialResult, userInputString);
+  writeToLog(operation, initialResult, userInputString, currentResult);
+}
 
-   }
-
-
-    addBtn.addEventListener('click',addNumbers);
-    subtractBtn.addEventListener('click',subtractNumbers);
-    multiplyBtn.addEventListener('click',multiplyNumbers);
-    divideBtn.addEventListener('click',divideNumbers);
-    
-
-
-
-
-
-
-
-
+addBtn.addEventListener("click", calculate.bind(this, "ADD"));
+subtractBtn.addEventListener("click", calculate.bind(this, "SUBTRACT"));
+multiplyBtn.addEventListener("click", calculate.bind(this, "MULTIPLY"));
+divideBtn.addEventListener("click", calculate.bind(this, "DIVIDE"));

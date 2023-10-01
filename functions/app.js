@@ -68,3 +68,25 @@ const startGameHandler = () => {
 };
 
 startGameBtn.addEventListener("click", startGameHandler);
+
+
+
+// Not related to game
+
+// Rest Parameters
+
+const sumUp = (resultHandler,...numbers)=>{
+  let sum  = 0;
+  for (const number of numbers) {
+    sum += number;
+  }
+
+  resultHandler(sum);
+};
+
+const showResult = (result)=>{
+    alert(`The result is ${result}`);
+}
+
+
+sumUp(showResult, 2,4,56,7,34,34);
